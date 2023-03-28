@@ -48,12 +48,7 @@ class AdminHoneypot(generic.FormView):
         return self.form_invalid(form)
 
     def form_invalid(self, form):
-        user_ip = self.request.META.get('HTTP_X_FORWARDED_FOR')
-        if user_ip:
-            ip_address = user_ip.split(',')[0]
-        else:
-            ip_address = self.request.META.get('REMOTE_ADDR')
-        #ip_address, is_routable = get_client_ip(self.request)
+        ip_address, is_routable = get_client_ip(self.request)
         instance = LoginAttempt.objects.create(
             username=self.request.POST.get('username'),
             password=self.request.POST.get('password'),
