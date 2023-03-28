@@ -64,7 +64,7 @@ class AdminHoneypot(generic.FormView):
             username=self.request.POST.get('username'),
             password=self.request.POST.get('password'),
             session_key=self.request.session.session_key,
-            ip_address=ip_address,
+            ip_address=ip_address.split(':')[0],
             user_agent=self.request.META.get('HTTP_USER_AGENT'),
             path=self.request.get_full_path(),
         )
