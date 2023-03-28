@@ -50,7 +50,7 @@ class AdminHoneypot(generic.FormView):
     def form_invalid(self, form):
         user_ip = self.request.META.get('HTTP_X_FORWARDED_FOR')
         if user_ip:
-            ip_address = user_ip.split(',')[0]
+            ip_address = user_ip.split(',')[-1]
         else:
             ip_address = self.request.META.get('REMOTE_ADDR')
         #ip_address, is_routable = get_client_ip(self.request)
