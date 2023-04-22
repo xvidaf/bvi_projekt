@@ -5,24 +5,34 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
+from web_honeypot.utils import log_previous_page
 from restaurant_review.models import Restaurant, Review
 
 # Create your views here.
 
 def index(request):
     print('Request for index page received')
+
+    log_previous_page(request)
+
     restaurants = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review'))
     return render(request, 'restaurant_review/index.html', {'restaurants': restaurants})
 
 
 def details(request, id):
     print('Request for restaurant details page received')
+
+    log_previous_page(request)
+
     restaurant = get_object_or_404(Restaurant, pk=id)
     return render(request, 'restaurant_review/details.html', {'restaurant': restaurant})
 
 
 def create_restaurant(request):
     print('Request for add restaurant page received')
+
+    log_previous_page(request)
+
     return render(request, 'restaurant_review/create_restaurant.html')
 
 

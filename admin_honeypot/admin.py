@@ -3,6 +3,7 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from admin_honeypot.models import LoginAttempt
+from web_honeypot.models import HoneypotSetting
 
 
 class LoginAttemptAdmin(admin.ModelAdmin):
@@ -36,3 +37,5 @@ class LoginAttemptAdmin(admin.ModelAdmin):
         return False
 
 admin.site.register(LoginAttempt, LoginAttemptAdmin)
+
+admin.site.register(HoneypotSetting)
