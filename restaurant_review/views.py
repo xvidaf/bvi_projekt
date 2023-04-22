@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
+from web_honeypot.models import HoneypotSetting, RestaurantLog, ReviewLog
 from web_honeypot.utils import log_previous_page
 from restaurant_review.models import Restaurant, Review
 
@@ -52,7 +53,25 @@ def add_restaurant(request):
         restaurant.name = name
         restaurant.street_address = street_address
         restaurant.description = description
-        Restaurant.save(restaurant)
+
+        if HoneypotSetting.objects.first().log_restaurant_creation is True:
+            user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+            if user_ip:
+                ip_address = user_ip.split(',')[0]
+            else:
+                ip_address = request.META.get('REMOTE_ADDR')
+            RestaurantLog.objects.create(
+                name=name,
+                street_address=street_address,
+                description=description,
+                session_key=request.session.session_key,
+                ip_address=ip_address.split(':')[0],
+                user_agent=request.META.get('HTTP_USER_AGENT'),
+            )
+        if HoneypotSetting.objects.first().allow_review_creation is True:
+            Restaurant.save(restaurant)
+        else:
+            restaurant.id = 1
 
         return HttpResponseRedirect(reverse('details', args=(restaurant.id,)))
 
@@ -76,6 +95,23 @@ def add_review(request, id):
         review.user_name = user_name
         review.rating = rating
         review.review_text = review_text
-        Review.save(review)
+        if HoneypotSetting.objects.first().log_review_creation is True:
+            user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+            if user_ip:
+                ip_address = user_ip.split(',')[0]
+            else:
+                ip_address = request.META.get('REMOTE_ADDR')
+            ReviewLog.objects.create(
+                restaurant=restaurant.id,
+                name=user_name,
+                rating=rating,
+                comment=review_text,
+                session_key=request.session.session_key,
+                ip_address=ip_address.split(':')[0],
+                user_agent=request.META.get('HTTP_USER_AGENT'),
+            )
+
+        if HoneypotSetting.objects.first().allow_review_creation is True:
+            Review.save(review)
 
     return HttpResponseRedirect(reverse('details', args=(id,)))
