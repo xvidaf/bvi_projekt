@@ -12,6 +12,7 @@ class HoneypotSetting(models.Model):
     log_restaurant_creation = models.BooleanField(default=False)
     allow_review_creation = models.BooleanField(default=False)
     allow_restaurant_creation = models.BooleanField(default=False)
+    log_SQL = models.BooleanField(default=False)
 class MovementLog(models.Model):
     ip_address = models.GenericIPAddressField(_("ip address"), protocol='both', blank=True, null=True)
     session_key = models.CharField(_("session key"), max_length=50, blank=True, null=True)
@@ -21,9 +22,9 @@ class MovementLog(models.Model):
     previous_page = models.TextField(_("previous page"), blank=True, null=True)
 
 class ReviewLog(models.Model):
-    restaurant = models.IntegerField(_("restaurant"), max_length=255, blank=True, null=True)
+    restaurant = models.IntegerField(_("restaurant"), blank=True, null=True)
     name = models.CharField(_("name"), max_length=255, blank=True, null=True)
-    rating = models.IntegerField(_("rating"), max_length=255, blank=True, null=True)
+    rating = models.IntegerField(_("rating"), blank=True, null=True)
     comment = models.CharField(_("comment"), max_length=255, blank=True, null=True)
     ip_address = models.GenericIPAddressField(_("ip address"), protocol='both', blank=True, null=True)
     session_key = models.CharField(_("session key"), max_length=50, blank=True, null=True)
@@ -42,4 +43,17 @@ class RestaurantLog(models.Model):
     class Meta:
         verbose_name = _("movement log")
         verbose_name_plural = _("movement logs")
+        ordering = ('timestamp',)
+
+class SqlLog(models.Model):
+    action = models.CharField(_("session key"), max_length=50, blank=True, null=True)
+    SQL = models.CharField(_("session key"), max_length=500000, blank=True, null=True)
+    ip_address = models.GenericIPAddressField(_("ip address"), protocol='both', blank=True, null=True)
+    session_key = models.CharField(_("session key"), max_length=50, blank=True, null=True)
+    user_agent = models.TextField(_("user-agent"), blank=True, null=True)
+    timestamp = models.DateTimeField(_("timestamp"), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("restaurant log")
+        verbose_name_plural = _("restaurant logs")
         ordering = ('timestamp',)

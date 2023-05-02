@@ -1,4 +1,6 @@
-from web_honeypot.models import HoneypotSetting, MovementLog
+from django.db import connection
+
+from web_honeypot.models import HoneypotSetting, MovementLog, SqlLog
 
 
 def log_previous_page(request):
@@ -27,3 +29,22 @@ def log_previous_page(request):
             )
     else:
         return
+
+
+def log_sql(request, action):
+    user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+    if user_ip:
+        ip_address = user_ip.split(',')[0]
+    else:
+        ip_address = request.META.get('REMOTE_ADDR')
+
+    sql = connection.queries[-1]
+    if HoneypotSetting.objects.first().log_SQL is True:
+        SqlLog.objects.create(
+            action=action,
+            SQL=sql,
+            session_key=request.session.session_key,
+            ip_address=ip_address.split(':')[0],
+            user_agent=request.META.get('HTTP_USER_AGENT'),
+        )
+    return
