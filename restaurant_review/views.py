@@ -16,6 +16,7 @@ from restaurant_review.models import Restaurant, Review
 # Create your views here.
 
 def index(request):
+    connection.force_debug_cursor = True
     print('Request for index page received')
 
     log_previous_page(request)
@@ -27,6 +28,7 @@ def index(request):
 
 
 def details(request, id):
+    connection.force_debug_cursor = True
     print('Request for restaurant details page received')
 
     log_previous_page(request)
@@ -46,6 +48,7 @@ def create_restaurant(request):
 
 @csrf_exempt
 def add_restaurant(request):
+    connection.force_debug_cursor = True
     try:
         name = request.POST['restaurant_name']
         street_address = request.POST['street_address']
@@ -87,6 +90,7 @@ def add_restaurant(request):
 
 @csrf_exempt
 def add_review(request, id):
+    connection.force_debug_cursor = True
     restaurant = get_object_or_404(Restaurant, pk=id)
     try:
         user_name = request.POST['user_name']
