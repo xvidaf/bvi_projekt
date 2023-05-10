@@ -41,8 +41,8 @@ class RestaurantLog(models.Model):
     timestamp = models.DateTimeField(_("timestamp"), auto_now_add=True)
 
     class Meta:
-        verbose_name = _("movement log")
-        verbose_name_plural = _("movement logs")
+        verbose_name = _("restaurant log")
+        verbose_name_plural = _("restaurant logs")
         ordering = ('timestamp',)
 
 class SqlLog(models.Model):
@@ -54,6 +54,6 @@ class SqlLog(models.Model):
     timestamp = models.DateTimeField(_("timestamp"), auto_now_add=True)
 
     class Meta:
-        verbose_name = _("restaurant log")
-        verbose_name_plural = _("restaurant logs")
+        verbose_name = _("sql log")
+        verbose_name_plural = _("sql logs")
         ordering = ('timestamp',)

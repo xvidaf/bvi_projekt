@@ -3,7 +3,7 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from admin_honeypot.models import LoginAttempt
-from web_honeypot.models import HoneypotSetting
+from web_honeypot.models import HoneypotSetting, MovementLog, RestaurantLog, ReviewLog, SqlLog
 
 
 class LoginAttemptAdmin(admin.ModelAdmin):
@@ -36,6 +36,29 @@ class LoginAttemptAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+
+class MovementLogAdmin(admin.ModelAdmin):
+    list_display = ('ip_address', 'session_key', 'timestamp', 'path', 'previous_page', 'user_agent')
+
+class ReviewLogAdmin(admin.ModelAdmin):
+    list_display = ('ip_address', 'session_key', 'timestamp', 'restaurant', 'name', 'rating', 'comment', 'user_agent')
+
+class RestaurantLogAdmin(admin.ModelAdmin):
+    list_display = ('ip_address', 'session_key', 'timestamp', 'name', 'street_address', 'description', 'user_agent')
+
+class SqlLogAdmin(admin.ModelAdmin):
+    list_display = ('ip_address', 'session_key', 'timestamp', 'action', 'SQL', 'user_agent')
+
+
+
 admin.site.register(LoginAttempt, LoginAttemptAdmin)
 
 admin.site.register(HoneypotSetting)
+
+admin.site.register(MovementLog, MovementLogAdmin)
+
+admin.site.register(ReviewLog, ReviewLogAdmin)
+
+admin.site.register(RestaurantLog, RestaurantLogAdmin)
+
+admin.site.register(SqlLog, SqlLogAdmin)
